@@ -144,7 +144,7 @@ PdfAssetDocument.prototype.onPrevPage = function(assetDocument) {
 };
 
 function ImageAssetDocument() {
-	this.init.apply(this, arguments)
+	this.init.apply(this, arguments);
 };
 
 ImageAssetDocument.prototype = new AssetDocument();
@@ -155,7 +155,30 @@ ImageAssetDocument.prototype.buildDocumentHook = function() {
 		doc.context.drawImage(imageObj, 0, 0);
 	};
   	imageObj.src = this.sourceUrl;
-}
+};
+
+function TiffAssetDocument() {
+	this.init.apply(this, arguments);
+};
+
+TiffAssetDocument.prototype = new AssetDocument();
+TiffAssetDocument.prototype.buildDocumentHook = function() {
+	
+
+	var reader = new FileReader();
+	var doc = this;
+	reader.onload = function(e) {
+		var canvasParent = doc.canvas.parentNode;
+		var tiffParser = new TIFFParser();
+
+		// Parse the TIFF image.
+		var tiffCanvas = tiffParser.parseTIFF(e.target.result, canvas);
+		// Put the parsed image in the page.
+		canvasParent.replaceChild(tiffCanvas, canvas);
+	};
+	var file = new File(this.sourceUrl);
+	reader.readAsDataURL(file);
+};
 
 
 

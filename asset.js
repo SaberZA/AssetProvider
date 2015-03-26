@@ -10,7 +10,8 @@ myApp.controller('pdf-controller', ['$scope', function($scope) {
     link: function(scope, element, attrs) {	      
 
 		// var url = 'test.pdf';		
-		var url = 'sahl.jpg';
+		// var url = 'sahl.jpg';
+		var url = 'CCITT_1.TIF';
 		scope.scaleOptions = [
 			{id: "pageAutoOption", title: "", value: "auto", selected: "selected", 'data-l10n-id': "page_scale_auto", content: "Automatic Zoom"},
 			{id: "pageActualOption", title: "", value: "page-actual", 'data-l10n-id': "page_scale_actual", content: "Actual Size"},
@@ -32,9 +33,12 @@ myApp.controller('pdf-controller', ['$scope', function($scope) {
      	var options = {source: url, canvas: canvas};	  		
 
         scope.assetDocument = new BlankAssetDocument(options);
-
-     	if (scope.assetDocument.GetFileExtension() == 'pdf') {
+        var format = scope.assetDocument.GetFileExtension();
+     	if (format == 'pdf') {
      		scope.assetDocument = new PdfAssetDocument(options);
+     	}
+     	else if (format.toLowerCase() == 'tif') {
+			scope.assetDocument = new TiffAssetDocument(options);
      	}
      	else {
      		scope.assetDocument = new ImageAssetDocument(options);
