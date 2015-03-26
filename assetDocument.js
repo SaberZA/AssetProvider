@@ -1,10 +1,14 @@
-function AssetDocument() {
+
+
+function AssetDocument(args) {
 	
 };
 
-AssetDocument.prototype.init = function (source) {
-	this.sourceUrl = source;
-	this.fileExtension = fileExtensionRegularExpression.exec(source);
+AssetDocument.prototype.init = function (args) {
+	this.sourceUrl = args.source;
+	this.canvas = args.canvas;
+	this.context = this.canvas.getContext('2d');
+	this.fileExtension = fileExtensionRegularExpression.exec(this.sourceUrl);
 	this.type = this.DetermineType(this.fileExtension);
 	this.currentDocument = {};
 };
@@ -39,35 +43,100 @@ AssetType.prototype.LoadDisplayMethod = function() {
 };
 
 function PdfAssetDocument() {
-	this.init.apply(this,arguments);
+	this.init.apply(this, arguments);
+	this.pageNum = 1;
+	this.pageNumPending = null;
+	this.scale = 1.1;
 };
 
 PdfAssetDocument.prototype = new AssetDocument();
 PdfAssetDocument.prototype.buildDocumentHook = function () {
-   /**
-   * Asynchronously downloads PDF.
-   */
-  PDFJS.getDocument(this.sourceUrl).then(function (pdfDoc_) {
-    pdfDoc = pdfDoc_;
-    document.getElementById('page_count').textContent = pdfDoc.numPages;
+	var pageNum = this.pageNum;
+	var doc = this;
 
-    // Initial/first page rendering
-    renderPage(pageNum);
+    PDFJS.getDocument(this.sourceUrl).then(function (pdfDoc_) {    
+    doc.pdfDoc = pdfDoc_;
+
+    document.getElementById('page_count').textContent = doc.pdfDoc.numPages;
+    doc.renderPage(pageNum);
   });
 };
 
+PdfAssetDocument.prototype.renderPage = function (num) {
+	pageRendering = true;
+	var canvas = this.canvas;
+	var doc = this;
+	// Using promise to fetch the page
+	this.pdfDoc.getPage(num).then(function(page) {
+	  var viewport = page.getViewport(doc.scale);
+	  canvas.height = viewport.height;
+	  canvas.width = viewport.width;
+
+	  // Render PDF page into canvas context
+	  var renderContext = {
+	    canvasContext: canvas.getContext('2d'),
+	    viewport: viewport
+	  };
+	  var renderTask = page.render(renderContext);
+
+	  // Wait for rendering to finish
+	  renderTask.promise.then(function () {
+	    pageRendering = false;
+	    if (doc.pageNumPending !== null) {
+	      // New page rendering is pending
+	      renderPage(doc.pageNumPending);
+	      doc.pageNumPending = null;
+	    }
+	  });
+	});
+
+	// Update page counters
+	document.getElementById('page_num').textContent = num;
+};
+
+/**
+* If another page rendering in progress, waits until the rendering is
+* finised. Otherwise, executes rendering immediately.
+*/
+PdfAssetDocument.prototype.queueRenderPage = function(num) {
+	if (this.pageRendering) {
+	  this.pageNumPending = num;
+	} else {
+	  this.renderPage(num);
+	}
+};
+
+PdfAssetDocument.prototype.onNextPage = function (assetDocument) {
+	if (assetDocument.pageNum >= assetDocument.numPages) {
+      return;
+    }
+    assetDocument.pageNum++;
+    assetDocument.queueRenderPage(assetDocument.pageNum);
+};
+
+/**
+* Displays previous page.
+*/
+PdfAssetDocument.prototype.onPrevPage = function(assetDocument) {
+	if (assetDocument.pageNum <= 1) {
+	  return;
+	}
+	assetDocument.pageNum--;
+	assetDocument.queueRenderPage(assetDocument.pageNum);
+};
+
 function ImageAssetDocument() {
-	this.init.apply(this,arguments);
+	this.init.apply(this, arguments)
 };
 
 ImageAssetDocument.prototype = new AssetDocument();
-ImageAssetDocument.prototype.buildDocumentHook = function(context) {
+ImageAssetDocument.prototype.buildDocumentHook = function() {
 	var imageObj = new Image();
-
-      imageObj.onload = function() {
-        context.drawImage(imageObj, 0, 0);
-      };
-      imageObj.src = this.sourceUrl;
+	var doc = this;
+	imageObj.onload = function() {
+		doc.context.drawImage(imageObj, 0, 0);
+	};
+  	imageObj.src = this.sourceUrl;
 }
 
 var fileExtensionRegularExpression = /(?:\.([^.]+))?$/;

@@ -1,3 +1,7 @@
+  $(document).ready(function() {
+
+
+
   //
   // If absolute URL from the remote server is provided, configure the CORS
   // header on that server.
@@ -85,7 +89,7 @@
     pageNum--;
     queueRenderPage(pageNum);
   }
-  document.getElementById('prev').addEventListener('click', onPrevPage);
+  document.getElementById('previous').addEventListener('click', onPrevPage);
 
   /**
    * Displays next page.
@@ -111,8 +115,10 @@
   // });
 
 
-  var pdfDocument = new PdfAssetDocument(url);
+  var pdfDocument = new PdfAssetDocument({source: url, canvas: canvas});
   pdfDocument.buildDocument();
 
-  var imageDocument = new ImageAssetDocument(imageUrl);
-  imageDocument.buildDocument(ctx2);
+  var imageDocument = new ImageAssetDocument({source: imageUrl, canvas: canvas2});
+  imageDocument.buildDocument();
+
+  });
