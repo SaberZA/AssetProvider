@@ -1,14 +1,20 @@
 
-
-function AssetDocument(args) {
+var fileExtensionRegularExpression = /(?:\.([^.]+))?$/;
+function AssetDocument() {
 	
 };
+
+function BlankAssetDocument() {
+	this.init.apply(this, arguments);
+};
+
+BlankAssetDocument.prototype = new AssetDocument();
 
 AssetDocument.prototype.init = function (args) {
 	this.sourceUrl = args.source;
 	this.canvas = args.canvas;
 	this.context = this.canvas.getContext('2d');
-	this.fileExtension = fileExtensionRegularExpression.exec(this.sourceUrl);
+	this.SetFileExtension(fileExtensionRegularExpression.exec(this.sourceUrl));
 	this.type = this.DetermineType(this.fileExtension);
 	this.currentDocument = {};
 };
@@ -21,6 +27,14 @@ AssetDocument.prototype.buildDocumentHook = function (args) {
 
 };
 
+AssetDocument.prototype.FileExtension = '';
+AssetDocument.prototype.SetFileExtension = function(fileExtension) {
+	this.FileExtension = fileExtension[1];
+};
+AssetDocument.prototype.GetFileExtension = function() {
+	return this.FileExtension;
+}
+
 AssetDocument.prototype.buildDocument = function (args) {
 	this.buildDocumentHook(args);
 };
@@ -30,17 +44,21 @@ function AssetType() {
 };
 
 AssetType.prototype.init = function(type) {
-	this.DocumentType = type;
+	this.documentType = type;
 };
 
 AssetType.prototype.LoadDisplayMethod = function() {
-	if(DocumentType === 'pdf'){
+	if(this.documentType === 'pdf'){
 		// load PDF context
 	}
 	else {
 		// load image context
 	};
 };
+
+AssetType.prototype.DocumentType = function() {
+	return this.documentType;
+}
 
 function PdfAssetDocument() {
 	this.init.apply(this, arguments);
@@ -139,5 +157,5 @@ ImageAssetDocument.prototype.buildDocumentHook = function() {
   	imageObj.src = this.sourceUrl;
 }
 
-var fileExtensionRegularExpression = /(?:\.([^.]+))?$/;
+
 
