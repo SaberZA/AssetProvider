@@ -1,3 +1,6 @@
+angular.module('assetApp').service('$assetDocumentService',function() {
+	
+});
 
 var fileExtensionRegularExpression = /(?:\.([^.]+))?$/;
 function AssetDocument() {
@@ -9,10 +12,26 @@ function BlankAssetDocument() {
 };
 
 BlankAssetDocument.prototype = new AssetDocument();
+BlankAssetDocument.prototype.transformAssetDocumentType = function() {
+	var format = this.GetFileExtension();
+	var assetDocument = {};
+	if (format == 'pdf') {
+ 		assetDocument = new PdfAssetDocument(this.options);
+ 	}
+ 	else if (format.toLowerCase() == 'tif' || format.toLowerCase() == 'tiff') {
+		assetDocument = new TiffAssetDocument(this.options);
+ 	}
+ 	else {
+ 		assetDocument = new ImageAssetDocument(this.options);
+ 	};
+
+ 	return assetDocument;
+}
 
 AssetDocument.prototype.init = function (args) {
-	this.sourceUrl = args.source;
-	this.canvas = args.canvas;
+	this.options = args;
+	this.sourceUrl = this.options.source;
+	this.canvas = this.options.canvas;
 	this.context = this.canvas.getContext('2d');
 	this.SetFileExtension(fileExtensionRegularExpression.exec(this.sourceUrl));
 	this.type = this.DetermineType(this.fileExtension);
