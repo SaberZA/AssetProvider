@@ -163,22 +163,28 @@ function TiffAssetDocument() {
 
 TiffAssetDocument.prototype = new AssetDocument();
 TiffAssetDocument.prototype.buildDocumentHook = function() {
-	
+	var doc = this;
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', doc.sourceUrl, true);
+	xhr.responseType = 'blob';
+	xhr.onload = function(e) {
+	  if (this.status == 200) {
+	    var blob = this.response;
 
+	    doc.loadBlobAsTiff(blob);
+	  }
+	};
+	xhr.send();
+};
+
+TiffAssetDocument.prototype.loadBlobAsTiff = function(blob) {
 	var reader = new FileReader();
 	var doc = this;
 	reader.onload = function(e) {
 		var canvasParent = doc.canvas.parentNode;
 		var tiffParser = new TIFFParser();
 
-		// Parse the TIFF image.
-		var tiffCanvas = tiffParser.parseTIFF(e.target.result, canvas);
-		// Put the parsed image in the page.
-		canvasParent.replaceChild(tiffCanvas, canvas);
+		var tiffCanvas = tiffParser.parseTIFF(e.target.result, doc.canvas);		
 	};
-	var file = new File(this.sourceUrl);
-	reader.readAsDataURL(file);
+	reader.readAsArrayBuffer( blob );
 };
-
-
-

@@ -9,9 +9,8 @@ myApp.controller('pdf-controller', ['$scope', function($scope) {
     restrict: 'E',
     link: function(scope, element, attrs) {	      
 
-		// var url = 'test.pdf';		
-		// var url = 'sahl.jpg';
-		var url = 'CCITT_1.TIF';
+		var url = 'test.pdf';	
+
 		scope.scaleOptions = [
 			{id: "pageAutoOption", title: "", value: "auto", selected: "selected", 'data-l10n-id': "page_scale_auto", content: "Automatic Zoom"},
 			{id: "pageActualOption", title: "", value: "page-actual", 'data-l10n-id': "page_scale_actual", content: "Actual Size"},
@@ -27,8 +26,7 @@ myApp.controller('pdf-controller', ['$scope', function($scope) {
 			{id: "", title: "", value: "4", 'data-l10n-id':"page_scale_percent", 'data-l10n-args':'{ "scale": 400 }', content: "400%"}		
 		];
 
-		var canvas = document.getElementById('the-canvas'),
-	  		canvas2 = document.getElementById('the-canvas2');
+		var canvas = document.getElementById('the-canvas');
 
      	var options = {source: url, canvas: canvas};	  		
 
@@ -37,7 +35,7 @@ myApp.controller('pdf-controller', ['$scope', function($scope) {
      	if (format == 'pdf') {
      		scope.assetDocument = new PdfAssetDocument(options);
      	}
-     	else if (format.toLowerCase() == 'tif') {
+     	else if (format.toLowerCase() == 'tif' || format.toLowerCase() == 'tiff') {
 			scope.assetDocument = new TiffAssetDocument(options);
      	}
      	else {

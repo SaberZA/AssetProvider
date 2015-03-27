@@ -6,23 +6,23 @@
               <div id="toolbarViewerLeft">
               	<button class="toolbarButton backToHaloButton" style="width: 150px;">
               		<label class="backToHaloLabel">Back to Halo</label>
-              	</button>          
-                <div class="splitToolbarButton">
-                  <button class="toolbarButton pageUp" title="Previous Page" id="previous" tabindex="13" data-l10n-id="previous" 
-                    ng-click="assetDocument.onPrevPage(assetDocument);">
-                    <span data-l10n-id="previous_label">Previous</span>
-                  </button>
-                  <div class="splitToolbarButtonSeparator"></div>
-                  <button class="toolbarButton pageDown" title="Next Page" id="next" tabindex="14" data-l10n-id="next" style="float: left;" 
-                    ng-click="assetDocument.onNextPage(assetDocument);">
-                    <span data-l10n-id="next_label">Next</span>
-                  </button>   
-	  		    </div>
-	  		    <label class="toolbarLabel" style="float: left;"> Page: <span id="page_num">1</span> / <span id="page_count">...</span>  </label>
+              	</button>
                 </div>
                 <div class="outerCenter">
-                <div class="innerCenter" id="toolbarViewerMiddle">
+                <div class="innerCenter" id="toolbarViewerMiddle" >
                   <div class="splitToolbarButton">
+                    <button class="toolbarButton pageUp" title="Previous Page" id="previous" tabindex="13" data-l10n-id="previous" 
+                      ng-click="assetDocument.onPrevPage(assetDocument);">
+                      <span data-l10n-id="previous_label">Previous</span>
+                    </button>
+                    <div class="splitToolbarButtonSeparator"></div>
+                    <button class="toolbarButton pageDown" title="Next Page" id="next" tabindex="14" data-l10n-id="next" style="float: left;" 
+                      ng-click="assetDocument.onNextPage(assetDocument);">
+                      <span data-l10n-id="next_label">Next</span>
+                    </button>                      
+                  </div>
+                  <label class="toolbarLabel" style="float: left;"> Page: <span id="page_num">1</span> / <span id="page_count">...</span>  </label> 
+                  <div class="splitToolbarButton"ng-hide="true">
                     <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out" tabindex="21" data-l10n-id="zoom_out">
                       <span data-l10n-id="zoom_out_label">Zoom Out</span>
                     </button>
@@ -31,7 +31,7 @@
                       <span data-l10n-id="zoom_in_label">Zoom In</span>
                      </button>
                   </div>
-                  <span id="scaleSelectContainer" class="dropdownToolbarButton">
+                  <span id="scaleSelectContainer" class="dropdownToolbarButton" ng-hide="true">
                      <select id="scaleSelect" title="Zoom" tabindex="23" data-l10n-id="zoom">
                       <option ng-repeat="scaleOption in scaleOptions" id="scaleOption.id" title="scaleOption.title" value="scaleOption.value" 
                         data-l10n-id="scaleOption.data-l10n-id">{{scaleOption.content}}</option>                      
@@ -54,7 +54,5 @@
 	      <div id="viewer" class="pdfViewer">
 	      	<canvas id="the-canvas" style="border:1px  solid black" height="300" width="300"></canvas>
 	      </div>
-	    </div>
-	    
-	    <canvas id="the-canvas2" style="border:1px  solid black;display: none;" height="300" width="300"></canvas>
+	    </div>	    
   	</div>
