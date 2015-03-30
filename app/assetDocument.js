@@ -1,6 +1,6 @@
-// angular.module('assetApp').service('$assetDocumentService',function() {
+angular.module('assetApp').service('$assetDocumentService',function() {
 
-// });
+});
 
 var fileExtensionRegularExpression = /(?:\.([^.]+))?$/;
 function AssetDocument() {
