@@ -1,6 +1,6 @@
-angular.module('assetApp').service('$assetDocumentService',function() {
-	
-});
+// angular.module('assetApp').service('$assetDocumentService',function() {
+
+// });
 
 var fileExtensionRegularExpression = /(?:\.([^.]+))?$/;
 function AssetDocument() {
@@ -32,7 +32,9 @@ AssetDocument.prototype.init = function (args) {
 	this.options = args;
 	this.sourceUrl = this.options.source;
 	this.canvas = this.options.canvas;
-	this.context = this.canvas.getContext('2d');
+	if (this.canvas) {
+		this.context = this.canvas.getContext('2d');
+	};	
 	this.SetFileExtension(fileExtensionRegularExpression.exec(this.sourceUrl));
 	this.type = this.DetermineType(this.fileExtension);
 	this.currentDocument = {};

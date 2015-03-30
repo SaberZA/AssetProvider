@@ -4,7 +4,7 @@ var myApp = angular.module('assetApp',[]);
 
 myApp.controller('asset-controller', ['$scope', function($scope) {
     $scope.sourceUrl = 'test.pdf';
-    $scope.options = {source: $scope.sourceUrl, canvas: {}};  
+    $scope.options = {source: $scope.sourceUrl, canvas: null};  
     $scope.scaleOptions = [];
     $scope.assetDocument = new BlankAssetDocument($scope.options);
 
@@ -18,6 +18,7 @@ myApp.controller('asset-controller', ['$scope', function($scope) {
         $scope.assetDocument = $scope.assetDocument.transformAssetDocumentType();
         $scope.assetDocument.buildDocument();
     };
+
 }]).directive('assetViewer',function() {
   return {
     restrict: 'E',
