@@ -7,7 +7,6 @@
   // header on that server.
   //
   var url = 'test.pdf';
-  var imageUrl = 'sahl.jpg';
 
   //
   // Disable workers to avoid yet another cross-origin issue (workers need
